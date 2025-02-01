@@ -1,0 +1,50 @@
+name: Validate Submission
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    container: python:3.11
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Check problem uniqueness
+        run: |
+          pip install pyyaml
+          python validate_problem_uniqueness.py
+          
+      - name: Install dependencies
+        run: pip install pytest
+      
+      - name: Run tests
+        run: |
+          for dir in problems/*/; do
+            if [ -f "$dir/tests.py" ]; then
+              echo "Testing $dir"
+              python -m pytest "$dir/tests.py" -v || echo "::warning::Tests failed in $dir"
+            fi
+          done
+      
+      - name: Create test report
+        if: always()
+        run: |
+          echo "Test Results:" > test-report.md
+          echo '```' >> test-report.md
+          pytest problems/ --tb=line -v >> test-report.md 2>&1 || true
+          echo '```' >> test-report.md
+          
+      - name: Upload test results
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('test-report.md', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: report
+            });
