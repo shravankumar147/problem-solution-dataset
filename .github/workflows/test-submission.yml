@@ -22,9 +22,13 @@ jobs:
       - name: Install dependencies
         run: pip install pytest
 
-      # - name: Run tests
-      #   run: pytest problems/**/tests.py || exit 1
+      - name: List directory contents for debugging
+        run: ls -R
+
+      - name: Clean cache
+        run: |
+          rm -rf .pytest_cache
+          rm -rf problems/**/__pycache__
 
       - name: Run tests
-        run: PYTHONPATH=$(pwd) pytest || exit 1
-
+        run: pytest problems/**/tests.py --maxfail=1 --disable-warnings || exit 1
