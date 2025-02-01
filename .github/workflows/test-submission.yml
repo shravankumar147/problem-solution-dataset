@@ -26,5 +26,5 @@ jobs:
       #   run: pytest problems/**/tests.py || exit 1
 
       - name: Run tests
-        run: PYTHONPATH=$(pwd) pytest $(find problems -name "tests.py") || exit 1
+        run: PYTHONPATH=$(pwd) pytest
 
