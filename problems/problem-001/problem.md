@@ -1,4 +1,4 @@
-# Problem Statement: Sum of Two Numbers
+# Problem: Sum of Two Numbers
 
 ## Problem Description:
 Write a function `sum_of_two(a, b)` that takes two integers `a` and `b` as input and returns their sum.

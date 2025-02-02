@@ -1,0 +1,27 @@
+[
+    {
+        "id": "problem-001",
+        "title": "Sum of Two Numbers",
+        "difficulty": "easy",
+        "tags": [
+            "math",
+            "addition"
+        ],
+        "author": "shravankumar147",
+        "problem_text": "# Problem: Sum of Two Numbers\n\n## Problem Description:\nWrite a function `sum_of_two(a, b)` that takes two integers `a` and `b` as input and returns their sum.\n\n### Input:\n- Two integers `a` and `b` (-10^5 <= a, b <= 10^5).\n\n### Output:\n- The sum of `a` and `b`.\n\n### Example:\n\n```python\nsum_of_two(2, 3)\n\nInput: 2,3\nOutput: 5\n\nNotes:\n\nThe function should handle both positive and negative numbers.",
+        "solution_code": "# solution.py\ndef sum_of_two(a, b):\n    return a + b"
+    },
+    {
+        "id": "problem-002",
+        "title": "Reverse a String",
+        "difficulty": "easy",
+        "tags": [
+            "string",
+            "basic",
+            "algorithm"
+        ],
+        "author": "shravankumar147",
+        "problem_text": "# Problem: Reverse a String\n\n## Problem Statement\nWrite a function that takes a string as input and returns the string in reverse order.\n\n### Example\n```python\nreverse_string(\"hello\")  # returns \"olleh\"\nreverse_string(\"world\")  # returns \"dlrow\"\n",
+        "solution_code": "\n### `solution.py`\ndef reverse_string(s: str) -> str:\n    \"\"\"\n    This function takes a string and returns the reversed string.\n    \"\"\"\n    return s[::-1]\n"
+    }
+]
