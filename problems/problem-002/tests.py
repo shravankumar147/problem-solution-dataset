@@ -2,8 +2,9 @@ import pytest
 import sys
 import os
 
-sys.path.append(os.path.dirname(__file__))  # Ensure the test file imports from the correct directory
+# sys.path.append(os.path.dirname(__file__))  # Ensure the test file imports from the correct directory
 
+# from solution import reverse_string
 from solution import reverse_string
 
 def test_reverse_string():

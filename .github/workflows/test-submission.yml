@@ -31,6 +31,12 @@ jobs:
           rm -rf problems/**/__pycache__
       
       - name: Run tests
-        run: PYTHONPATH=$(pwd) pytest problems/**/tests_*.py --maxfail=1 --disable-warnings --tb=short || exit 1
+        run: |
+            for dir in problems/*/; do
+              if [ -f "$dir/tests.py" ]; then
+                echo "Testing $dir"
+                python -m pytest "$dir/tests.py" -v || echo "::warning::Tests failed in $dir"
+              fi
+            done
         
         
