@@ -25,10 +25,10 @@ jobs:
       - name: List directory contents for debugging
         run: ls -R
 
-      - name: Clean cache
+      - name: Clean pytest cache and pycache
         run: |
           rm -rf .pytest_cache
           rm -rf problems/**/__pycache__
-
-      - name: Run tests
-        run: pytest problems/**/tests.py --maxfail=1 --disable-warnings || exit 1
+      
+      - name: Set PYTHONPATH and Run Tests
+        run: PYTHONPATH=$(pwd) pytest problems/**/tests.py --maxfail=1 --disable-warnings || exit 1
