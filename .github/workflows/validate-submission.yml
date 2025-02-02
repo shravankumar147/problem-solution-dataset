@@ -9,18 +9,24 @@ on:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    container: python:3.11
+    container: python:3.11  # Ensures consistent environment
+    
     steps:
-      - uses: actions/checkout@v4
-      
-      - name: Check problem uniqueness
-        run: |
-          pip install pyyaml
-          python validate_problem_uniqueness.py
-          
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Install dependencies
-        run: pip install pytest
-      
+        run: |
+          pip install pytest pyyaml
+
+      - name: Check problem uniqueness
+        run: python validate_problem_uniqueness.py
+
+      - name: Clean pytest cache and __pycache__
+        run: |
+          rm -rf .pytest_cache
+          find problems -name "__pycache__" -exec rm -rf {} +
+
       - name: Run tests
         run: |
           for dir in problems/*/; do
@@ -29,37 +35,31 @@ jobs:
               python -m pytest "$dir/tests.py" -v || echo "::warning::Tests failed in $dir"
             fi
           done
-      
+
       - name: Create test report
         if: always()
         run: |
           echo "Test Results:" > test-report.md
           echo '```' >> test-report.md
-          pytest problems/ --tb=line -v >> test-report.md 2>&1 || true
+          pytest problems/ --tb=short -v | tee -a test-report.md || true
           echo '```' >> test-report.md
-          
-      - name: Upload test results (only for PRs)
+
+      - name: Upload test results to PR
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v6
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const fs = require('fs');
-            const reportPath = 'test-report.md';
-            
-            if (fs.existsSync(reportPath)) {
-              const report = fs.readFileSync(reportPath, 'utf8');
-              if (context.issue.number) { // Ensure issue number exists
-                github.rest.issues.createComment({
-                  issue_number: context.issue.number,
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  body: `Test Results:\n\`\`\`\n${report}\n\`\`\``
-                });
-              } else {
-                console.log("No issue number found, skipping comment.");
-              }
-            } else {
-              console.log("No test report found, skipping comment.");
+            const issue_number = context.payload.pull_request.number;
+            if (!issue_number) {
+              console.log("Skipping comment: Not a pull request");
+              return;
             }
-
-    
+            const report = fs.readFileSync('test-report.md', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: issue_number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: report
+            });

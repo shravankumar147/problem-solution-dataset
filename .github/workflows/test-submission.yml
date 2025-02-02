@@ -1,42 +1,42 @@
-name: Test Submissions
+# name: Test Submissions
 
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+# on:
+#   push:
+#     branches: [ main ]
+#   pull_request:
+#     branches: [ main ]
 
-jobs:
-  test:
-    runs-on: ubuntu-latest
+# jobs:
+#   test:
+#     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: "3.9"
+#       - name: Set up Python
+#         uses: actions/setup-python@v3
+#         with:
+#           python-version: "3.9"
 
-      - name: Install dependencies
-        run: pip install pytest
+#       - name: Install dependencies
+#         run: pip install pytest
 
-      - name: List directory contents for debugging
-        run: ls -R
+#       - name: List directory contents for debugging
+#         run: ls -R
 
-      - name: Clean pytest cache and pycache
-        run: |
-          rm -rf .pytest_cache
-          rm -rf problems/**/__pycache__
+#       - name: Clean pytest cache and pycache
+#         run: |
+#           rm -rf .pytest_cache
+#           rm -rf problems/**/__pycache__
       
-      - name: Run tests
-        run: |
-            for dir in problems/*/; do
-              if [ -f "$dir/tests.py" ]; then
-                echo "Testing $dir"
-                python -m pytest "$dir/tests.py" -v || echo "::warning::Tests failed in $dir"
-              fi
-            done
+#       - name: Run tests
+#         run: |
+#             for dir in problems/*/; do
+#               if [ -f "$dir/tests.py" ]; then
+#                 echo "Testing $dir"
+#                 python -m pytest "$dir/tests.py" -v || echo "::warning::Tests failed in $dir"
+#               fi
+#             done
         
         
