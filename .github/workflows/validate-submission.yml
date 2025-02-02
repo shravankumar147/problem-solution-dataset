@@ -38,15 +38,28 @@ jobs:
           pytest problems/ --tb=line -v >> test-report.md 2>&1 || true
           echo '```' >> test-report.md
           
-      - name: Upload test results
+      - name: Upload test results (only for PRs)
+        if: github.event_name == 'pull_request'
         uses: actions/github-script@v6
         with:
           script: |
             const fs = require('fs');
-            const report = fs.readFileSync('test-report.md', 'utf8');
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: report
-            });
+            const reportPath = 'test-report.md';
+            
+            if (fs.existsSync(reportPath)) {
+              const report = fs.readFileSync(reportPath, 'utf8');
+              if (context.issue.number) { // Ensure issue number exists
+                github.rest.issues.createComment({
+                  issue_number: context.issue.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  body: `Test Results:\n\`\`\`\n${report}\n\`\`\``
+                });
+              } else {
+                console.log("No issue number found, skipping comment.");
+              }
+            } else {
+              console.log("No test report found, skipping comment.");
+            }
+
+    
