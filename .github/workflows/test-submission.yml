@@ -30,5 +30,6 @@ jobs:
           rm -rf .pytest_cache
           rm -rf problems/**/__pycache__
       
-      - name: Set PYTHONPATH and Run Tests
-        run: PYTHONPATH=$(pwd) pytest problems/**/tests.py --maxfail=1 --disable-warnings || exit 1
+      - name: Run tests
+        run: PYTHONPATH=$(pwd) pytest problems/**/tests.py --import-mode=importlib --maxfail=1 --disable-warnings --tb=short || exit 1
+        
